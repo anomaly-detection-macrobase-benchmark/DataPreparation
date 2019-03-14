@@ -14,7 +14,10 @@ Requirements:
 Install dependencies by executing `pipenv install`. Use `pipenv shell` or `pipenv run` to run scripts (or use PyCharm, it should detect pipenv)
 
 Example:
-`cd preparation`, `pipenv run python describe.py original_datasets/shuttle-unsupervised-ad.csv --label is_anomaly`
+
+`cd preparation`
+
+`pipenv run python describe.py original_datasets/shuttle-unsupervised-ad.csv --label is_anomaly`
 
 Run scripts without arguments to get description and usage info (or look at the source code).
  

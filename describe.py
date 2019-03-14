@@ -1,8 +1,9 @@
 import argparse
+from utils.argparse import ArgParser
 import pandas as pd
 
 
-parser = argparse.ArgumentParser(
+parser = ArgParser(
     description='''Prints dataset info''',
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''Example:

@@ -19,7 +19,7 @@ print(df)
 pd.set_option('display.max_columns', 500)
 print(df.describe(include='all'))
 
-if (args.label_column_name):
+if args.label_column_name:
     print('\nLabel column: ')
     label_column = df[args.label_column_name]
     print('Value    %')

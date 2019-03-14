@@ -7,8 +7,8 @@ arg_parser = ArgParser(
     description='''Prints dataset info''',
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''Example:
-describe.py output/index.json
-describe.py output/index.json --label is_anomaly''')
+describe.py original_datasets/shuttle-unsupervised-ad.csv
+describe.py original_datasets/shuttle-unsupervised-ad.csv --label is_anomaly''')
 arg_parser.add_argument('file', type=str, help='path to the CSV file')
 arg_parser.add_argument('--label', metavar='label_column', dest='label_column_name', type=str, help='label column name')
 args = arg_parser.parse_args()

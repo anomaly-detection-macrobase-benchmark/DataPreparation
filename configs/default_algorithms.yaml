@@ -1,0 +1,32 @@
+algorithms:
+  iforest:
+    treesCount: 100
+    subsampleSize: 256
+    trainSize: 4000
+
+  lof-bkaluza:
+    knn: 15
+    trainSize: 200
+
+  mcod:
+    maxDistance: 13.0
+    minNeighborCount: 150
+    classifierWindowSize: 50000
+    classifierSlide: 50000
+    allowDuplicates: false
+
+  mcd:
+    alpha: 0.9
+    stoppingDelta: 0.00001
+    trainSize: 4000
+
+  percentile:
+    cutoff: 0.5
+    includeHi: true
+    includeLo: true
+
+  mad:
+    trainSize: 4000
+
+  random:
+    binary: false

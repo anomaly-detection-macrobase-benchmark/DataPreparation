@@ -1,6 +1,6 @@
 Scripts for benchmark data preparation and benchmark results evaluation 
 
-https://github.com/AlexP11223/macrobase/tree/alexp-vmu/alexp/src/main/java/alexp/macrobase
+https://github.com/anomaly-detection-macrobase-benchmark/macrobase/tree/alexp-vmu/alexp/src/main/java/alexp/macrobase
 
 https://www.draw.io/?lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=benchmark.xml#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1680K8Opv09O7BPfbhmxHNfp9c3wMeriC%26export%3Ddownload
 

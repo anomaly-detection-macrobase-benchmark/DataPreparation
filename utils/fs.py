@@ -1,3 +1,4 @@
+import json
 import os
 import pandas as pd
 import yaml
@@ -33,3 +34,8 @@ def save_yaml(data, file_path):
     create_dirs_for_file(file_path)
     with open(file_path, 'w', encoding='utf8') as outfile:
         yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
+
+
+def load_json(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)

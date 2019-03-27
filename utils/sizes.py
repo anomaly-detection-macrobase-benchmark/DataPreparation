@@ -11,6 +11,8 @@ def format_size(num):
 
 def parse_size(s):
     s = s.upper()
+    unit_num = '000'
     for unit in units[1:]:
-        s = s.replace(unit, '000')
+        s = s.replace(unit, unit_num)
+        unit_num += '000'
     return int(s)

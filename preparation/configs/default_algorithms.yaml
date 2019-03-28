@@ -11,8 +11,8 @@ algorithms:
   mcod:
     maxDistance: 13.0
     minNeighborCount: 150
-    classifierWindowSize: 50000
-    classifierSlide: 50000
+    classifierWindowSize: 10000000
+    classifierSlide: 10000000
     allowDuplicates: false
 
   mcd:

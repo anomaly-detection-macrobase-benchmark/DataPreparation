@@ -18,8 +18,9 @@ args = arg_parser.parse_args()
 
 df = load_csv(args.file)
 
-print(df)
 pd.set_option('display.max_columns', 500)
+pd.options.display.float_format = '{:.6f}'.format
+print(df)
 print(df.describe(include='all'))
 
 if args.label_column_name:

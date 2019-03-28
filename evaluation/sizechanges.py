@@ -31,7 +31,8 @@ data_file_ids = {r['config']['dataset']['id'] for r in results}
 datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
 
 execution_results = [{
-    'timeElapsed': r['result']['timeElapsed'],
+    'trainingTime': r['result']['trainingTime'],
+    'classificationTime': r['result']['classificationTime'],
     'scores': load_csv(os.path.join(args.result_dir, r['result']['algorithmOutputFilePath']))['_OUTLIER'].values,
     'algorithm': r['config']['algorithm']['id'],
     'dataset': r['config']['dataset']['id']
@@ -43,21 +44,40 @@ algorithm_results = {id: sorted(list(g), key=lambda x: len(x['scores']))
 
 marker = itertools.cycle((',', '+', '.', 'o', '*'))
 
+plt.figure(1, figsize=[14, 5])
+plt.suptitle(args.title)
+
+plt.subplot(1, 2, 1)
 for id, g in algorithm_results.items():
     plt.plot([len(it['scores']) for it in g],
-             [it['timeElapsed'] for it in g],
+             [it['trainingTime'] for it in g],
              label=id, marker=next(marker))
 plt.legend(loc='upper left')
 plt.xlabel('dataset size')
-plt.ylabel('time')
+plt.ylabel('training time')
 plt.yscale(args.scale)
 plt.xscale(args.scale)
-plt.title(args.title)
+
+plt.subplot(1, 2, 2)
+for id, g in algorithm_results.items():
+    plt.plot([len(it['scores']) for it in g],
+             [it['classificationTime'] for it in g],
+             label=id, marker=next(marker))
+plt.legend(loc='upper left')
+plt.xlabel('dataset size')
+plt.ylabel('classification time')
+plt.yscale(args.scale)
+plt.xscale(args.scale)
+
 plt.show()
+
+if args.label_column_name is None:
+    exit(0)
 
 
 def pr_auc(scores, labels):
     return average_precision_score(labels, scores)
+
 
 labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
 

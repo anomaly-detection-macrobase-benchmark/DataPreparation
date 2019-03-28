@@ -19,6 +19,7 @@ arg_parser = ArgParser(
 arg_parser.add_argument('result_dir', type=str, help='path to the directory with the benchmark result')
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')
 arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', required=True, type=str, help='label column name')
+arg_parser.add_argument('--title', type=str, help='title displayed on the plots')
 args = arg_parser.parse_args()
 
 results_file_paths = [os.path.join(args.result_dir, f) for f in os.listdir(args.result_dir) if f.endswith('.json')]
@@ -47,6 +48,7 @@ for id, g in algorithm_results.items():
 plt.legend(loc='upper left')
 plt.xlabel('dataset size')
 plt.ylabel('time')
+plt.title(args.title)
 plt.show()
 
 

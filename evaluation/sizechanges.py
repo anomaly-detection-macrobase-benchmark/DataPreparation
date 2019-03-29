@@ -9,6 +9,7 @@ sys.path.insert(0, '..')  # cannot include utils otherwise, not sure if there is
 import argparse
 from utils.argparse import ArgParser
 from utils.fs import load_csv, load_json
+from utils.plots import marker_cycle, color_cycle
 import matplotlib.pyplot as plt
 import os
 
@@ -42,16 +43,25 @@ execution_results.sort(key=itemgetter('algorithm'))
 algorithm_results = {id: sorted(list(g), key=lambda x: len(x['scores']))
                      for id, g in itertools.groupby(execution_results, lambda item: item['algorithm'])}
 
-marker = itertools.cycle((',', '+', '.', 'o', '*'))
+
+def has_training(group):
+    return any(it['trainingTime'] > 0 for it in group)
+
 
 plt.figure(1, figsize=[14, 5])
 plt.suptitle(args.title)
 
 plt.subplot(1, 2, 1)
-for id, g in algorithm_results.items():
+color = color_cycle()
+marker = marker_cycle()
+for alg_id, g in algorithm_results.items():
+    if not has_training(g):
+        next(color)
+        next(marker)
+        continue
     plt.plot([len(it['scores']) for it in g],
              [it['trainingTime'] for it in g],
-             label=id, marker=next(marker))
+             label=alg_id, color=next(color), marker=next(marker))
 plt.legend(loc='upper left')
 plt.xlabel('dataset size')
 plt.ylabel('training time')
@@ -59,10 +69,12 @@ plt.yscale(args.scale)
 plt.xscale(args.scale)
 
 plt.subplot(1, 2, 2)
-for id, g in algorithm_results.items():
+color = color_cycle()
+marker = marker_cycle()
+for alg_id, g in algorithm_results.items():
     plt.plot([len(it['scores']) for it in g],
              [it['classificationTime'] for it in g],
-             label=id, marker=next(marker))
+             label=alg_id, color=next(color), marker=next(marker))
 plt.legend(loc='upper left')
 plt.xlabel('dataset size')
 plt.ylabel('classification time')
@@ -71,7 +83,7 @@ plt.xscale(args.scale)
 
 plt.show()
 
-if args.label_column_name is None:
+if not args.label_column_name:
     exit(0)
 
 
@@ -81,10 +93,13 @@ def pr_auc(scores, labels):
 
 labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
 
-for id, g in algorithm_results.items():
+color = color_cycle()
+marker = marker_cycle()
+
+for alg_id, g in algorithm_results.items():
     plt.plot([len(it['scores']) for it in g],
              [pr_auc(it['scores'], labels[it['dataset']]) for it in g],
-             label=id)
+             label=alg_id, color=next(color), marker=next(marker))
 plt.legend(loc='upper left')
 plt.xlabel('dataset size')
 plt.ylabel('PR AUC')

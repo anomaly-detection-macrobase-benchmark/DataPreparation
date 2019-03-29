@@ -19,7 +19,7 @@ arg_parser = ArgParser(
     epilog='''Examples:''')
 arg_parser.add_argument('result_dir', type=str, help='path to the directory with the benchmark result')
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')
-arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', required=True, type=str, help='label column name')
+arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', type=str, help='label column name')
 arg_parser.add_argument('--title', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--scale', type=str, default='linear', help='plot axis scale, linear or log')
 args = arg_parser.parse_args()

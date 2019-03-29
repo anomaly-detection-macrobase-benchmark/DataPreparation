@@ -38,6 +38,7 @@ def describe(file_path):
 
 if os.path.isdir(args.path):
     file_paths = [os.path.join(args.path, f) for f in os.listdir(args.path) if f.endswith('.csv')]
+    file_paths = sorted(file_paths, key=lambda f: os.path.getmtime(f))
     for file_path in file_paths:
         print(file_path)
         describe(file_path)

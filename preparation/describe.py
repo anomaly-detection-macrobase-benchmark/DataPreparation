@@ -13,6 +13,7 @@ arg_parser = ArgParser(
 describe.py original_datasets/shuttle-unsupervised-ad.csv
 describe.py original_datasets/shuttle-unsupervised-ad.csv --label is_anomaly''')
 arg_parser.add_argument('file', type=str, help='path to the CSV file')
+arg_parser.add_argument('--no-contents', action='store_true', help='do not print element values (head, tail)')
 arg_parser.add_argument('--label', metavar='label_column', dest='label_column_name', type=str, help='label column name')
 args = arg_parser.parse_args()
 
@@ -20,7 +21,8 @@ df = load_csv(args.file)
 
 pd.set_option('display.max_columns', 500)
 pd.options.display.float_format = '{:.6f}'.format
-print(df)
+if not args.no_contents:
+    print(df)
 print(df.describe(include='all'))
 
 if args.label_column_name:

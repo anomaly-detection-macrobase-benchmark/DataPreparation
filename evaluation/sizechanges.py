@@ -28,12 +28,10 @@ results_file_paths = [os.path.join(args.result_dir, f) for f in os.listdir(args.
 
 results = [load_json(f) for f in results_file_paths]
 
-data_file_ids = {r['config']['dataset']['id'] for r in results}
-datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
-
 execution_results = [{
     'trainingTime': r['result']['trainingTime'],
     'classificationTime': r['result']['classificationTime'],
+    'maxMemory': r['result']['maxMemory'],
     'scores': load_csv(os.path.join(args.result_dir, r['result']['algorithmOutputFilePath']))['_OUTLIER'].values,
     'algorithm': r['config']['algorithm']['id'],
     'dataset': r['config']['dataset']['id']
@@ -83,6 +81,20 @@ plt.xscale(args.scale)
 
 plt.show()
 
+color = color_cycle()
+marker = marker_cycle()
+for alg_id, g in algorithm_results.items():
+    plt.plot([len(it['scores']) for it in g],
+             [it['maxMemory'] for it in g],
+             label=alg_id, color=next(color), marker=next(marker))
+plt.legend(loc='upper left')
+plt.xlabel('dataset size')
+plt.ylabel('max memory usage')
+plt.yscale(args.scale)
+plt.xscale(args.scale)
+
+plt.show()
+
 if not args.label_column_name:
     exit(0)
 
@@ -90,6 +102,9 @@ if not args.label_column_name:
 def pr_auc(scores, labels):
     return average_precision_score(labels, scores)
 
+
+data_file_ids = {r['config']['dataset']['id'] for r in results}
+datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
 
 labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
 

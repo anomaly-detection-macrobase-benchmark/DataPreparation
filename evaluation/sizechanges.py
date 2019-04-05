@@ -83,13 +83,14 @@ plt.show()
 
 color = color_cycle()
 marker = marker_cycle()
+plt.suptitle(args.title)
 for alg_id, g in algorithm_results.items():
     plt.plot([len(it['scores']) for it in g],
-             [it['maxMemory'] for it in g],
+             [it['maxMemory'] / 1024 / 1024 for it in g],
              label=alg_id, color=next(color), marker=next(marker))
 plt.legend(loc='upper left')
 plt.xlabel('dataset size')
-plt.ylabel('max memory usage')
+plt.ylabel('max memory usage, MB')
 plt.yscale(args.scale)
 plt.xscale(args.scale)
 

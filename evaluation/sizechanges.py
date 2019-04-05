@@ -9,7 +9,7 @@ sys.path.insert(0, '..')  # cannot include utils otherwise, not sure if there is
 import argparse
 from utils.argparse import ArgParser
 from utils.fs import load_csv, load_json
-from utils.plots import marker_cycle, color_cycle
+from utils.plots import marker_cycle, color_cycle, save_plot
 import matplotlib.pyplot as plt
 import os
 
@@ -22,6 +22,8 @@ arg_parser.add_argument('--data-dir', type=str, help='path to the directory with
 arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', type=str, help='label column name')
 arg_parser.add_argument('--title', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--scale', type=str, default='linear', help='plot axis scale, linear or log')
+arg_parser.add_argument('--output-dir', type=str, help='path to the directory for saving plots')
+arg_parser.add_argument('--silent', action='store_true', help='do not show plots')
 args = arg_parser.parse_args()
 
 results_file_paths = [os.path.join(args.result_dir, f) for f in os.listdir(args.result_dir) if f.endswith('.json')]
@@ -79,7 +81,10 @@ plt.ylabel('classification time')
 plt.yscale(args.scale)
 plt.xscale(args.scale)
 
-plt.show()
+if args.output_dir:
+    save_plot(plt.gcf(), 'time', args.output_dir)
+if not args.silent:
+    plt.show()
 
 color = color_cycle()
 marker = marker_cycle()
@@ -94,7 +99,10 @@ plt.ylabel('max memory usage, MB')
 plt.yscale(args.scale)
 plt.xscale(args.scale)
 
-plt.show()
+if args.output_dir:
+    save_plot(plt.gcf(), 'memory', args.output_dir)
+if not args.silent:
+    plt.show()
 
 if not args.label_column_name:
     exit(0)
@@ -123,4 +131,8 @@ plt.xscale('log')
 plt.yscale(args.scale)
 plt.xscale(args.scale)
 plt.title(args.title)
-plt.show()
+
+if args.output_dir:
+    save_plot(plt.gcf(), 'auc', args.output_dir)
+if not args.silent:
+    plt.show()

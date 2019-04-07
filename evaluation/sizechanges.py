@@ -85,6 +85,7 @@ if args.output_dir:
     save_plot(plt.gcf(), 'time', args.output_dir)
 if not args.silent:
     plt.show()
+plt.close()
 
 color = color_cycle()
 marker = marker_cycle()
@@ -103,6 +104,7 @@ if args.output_dir:
     save_plot(plt.gcf(), 'memory', args.output_dir)
 if not args.silent:
     plt.show()
+plt.close()
 
 if not args.label_column_name:
     exit(0)
@@ -136,3 +138,4 @@ if args.output_dir:
     save_plot(plt.gcf(), 'auc', args.output_dir)
 if not args.silent:
     plt.show()
+plt.close()

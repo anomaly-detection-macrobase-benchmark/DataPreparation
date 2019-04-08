@@ -23,7 +23,7 @@ with open(args.file, 'r') as mulcross_file:
             parts = line.split()
             if not header_written:
                 columns = ['d%d' % i for i in range(1, len(parts) + 1)]
-                if len(parts[-1]) == 1: # 0 or 1
+                if parts[-1] in ('0', '1'):
                     columns[-1] = 'is_anomaly'
                 csv_file.write(','.join(columns) + '\n')
                 header_written = True

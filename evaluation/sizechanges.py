@@ -127,7 +127,6 @@ if args.label_column_name:
     plt.xscale('log')
     plt.yscale(args.scale)
     plt.xscale(args.scale)
-    plt.title(args.title)
 
     if args.output_dir:
         save_plot(fig, 'auc', args.output_dir)

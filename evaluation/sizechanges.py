@@ -124,9 +124,6 @@ if args.label_column_name:
     plt.legend(loc='upper left')
     plt.xlabel('dataset size')
     plt.ylabel('PR AUC')
-    plt.xscale('log')
-    plt.yscale(args.scale)
-    plt.xscale(args.scale)
 
     if args.output_dir:
         save_plot(fig, 'auc', args.output_dir)

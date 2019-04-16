@@ -1,5 +1,6 @@
 import os
 import sys
+from enum import IntEnum
 
 from matplotlib.colors import ListedColormap
 
@@ -22,10 +23,19 @@ plot.py datasets''')
 arg_parser.add_argument('path', type=str, help='path to the CSV file or dir with CSV files')
 arg_parser.add_argument('--attr', type=lambda s: s.split(','), help='attributes to be plotted (default the first 2 columns)')
 arg_parser.add_argument('--label', metavar='label_column', dest='label_column_name', default='is_anomaly', type=str, help='label column name (default is_anomaly)')
+arg_parser.add_argument('--score', metavar='score_column', dest='score_column_name', default='_OUTLIER', type=str, help='score column name (default _OUTLIER)')
+arg_parser.add_argument('--threshold', metavar='score_threshold', default=0.5, type=float, help='score threshold (default 0.5)')
 arg_parser.add_argument('--title', default='{file_name}', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--output-dir', type=str, help='path to the directory for saving plots')
 arg_parser.add_argument('--silent', action='store_true', help='do not show plots')
 args = arg_parser.parse_args()
+
+
+class ResultType(IntEnum):
+    TRUE_NEGATIVE = 0
+    FALSE_NEGATIVE = 1
+    TRUE_POSITIVE = 2
+    FALSE_POSITIVE = 3
 
 
 def process(file_path):
@@ -33,11 +43,27 @@ def process(file_path):
     file_name = file_name_without_ext(file_path)
     attributes = args.attr if args.attr else list(df.columns)[0:2]
     labels = df[args.label_column_name] if args.label_column_name in df else [0] * len(df)
+    scores = df[args.score_column_name] if args.score_column_name in df else [0] * len(df)
+    scores = [1 if score > args.threshold else 0 for score in scores]
     title = args.title.format(file_name=file_name)
+
+    def get_result_type(score, label, threshold):
+        if label == 0:
+            return ResultType.FALSE_POSITIVE if score > threshold else ResultType.TRUE_NEGATIVE
+        return ResultType.TRUE_POSITIVE if score > threshold else ResultType.FALSE_NEGATIVE
+
+    result_color_map = {
+        ResultType.TRUE_NEGATIVE: 'royalblue',
+        ResultType.FALSE_NEGATIVE: 'red',
+        ResultType.TRUE_POSITIVE: 'limegreen',
+        ResultType.FALSE_POSITIVE: 'darkorange',
+    }
+
+    results = [get_result_type(it[0], it[1], args.threshold) for it in zip(scores, labels)]
 
     fig = plt.figure()
     plt.suptitle(title)
-    plt.scatter(df[attributes[0]], df[attributes[1]], c=labels, cmap=ListedColormap(['royalblue', 'red']))
+    plt.scatter(df[attributes[0]], df[attributes[1]], c=[result_color_map[r] for r in results])
     plt.xlabel(attributes[0])
     plt.ylabel(attributes[1])
 

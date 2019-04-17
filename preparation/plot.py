@@ -46,10 +46,16 @@ def process(file_path):
     df = load_csv(file_path)
     file_name = file_name_without_ext(file_path)
     attributes = args.attr if args.attr else list(df.columns)[0:2]
-    labels = df[args.label_column_name] if args.label_column_name in df else [0] * len(df)
-    has_scores = args.score_column_name in df
-    scores = df[args.score_column_name] if has_scores else [0] * len(df)
     title = args.title.format(file_name=file_name)
+
+    has_labels = args.label_column_name in df
+    labels = df[args.label_column_name] if has_labels else [0] * len(df)
+
+    has_scores = args.score_column_name in df
+    if has_scores and not has_labels:
+        print('Label column not found, cannot use scores')
+        has_scores = False
+    scores = df[args.score_column_name] if has_scores else [0] * len(df)
 
     def get_result_type(score, label, threshold):
         if label == 0:

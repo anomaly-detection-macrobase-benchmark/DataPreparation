@@ -10,6 +10,7 @@ import argparse
 from utils.argparse import ArgParser
 from utils.plots import save_plot
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from utils.fs import load_csv, file_name_without_ext
 
 arg_parser = ArgParser(
@@ -37,14 +38,17 @@ class ResultType(IntEnum):
     TRUE_POSITIVE = 2
     FALSE_POSITIVE = 3
 
+    def pretty_name(self):
+        return self.name.lower().replace('_', ' ')
+
 
 def process(file_path):
     df = load_csv(file_path)
     file_name = file_name_without_ext(file_path)
     attributes = args.attr if args.attr else list(df.columns)[0:2]
     labels = df[args.label_column_name] if args.label_column_name in df else [0] * len(df)
-    scores = df[args.score_column_name] if args.score_column_name in df else [0] * len(df)
-    scores = [1 if score > args.threshold else 0 for score in scores]
+    has_scores = args.score_column_name in df
+    scores = df[args.score_column_name] if has_scores else [0] * len(df)
     title = args.title.format(file_name=file_name)
 
     def get_result_type(score, label, threshold):
@@ -66,6 +70,8 @@ def process(file_path):
     plt.scatter(df[attributes[0]], df[attributes[1]], c=[result_color_map[r] for r in results])
     plt.xlabel(attributes[0])
     plt.ylabel(attributes[1])
+    if has_scores:
+        plt.legend(handles=[mpatches.Patch(color=result_color_map[r], label=r.pretty_name()) for r in set(results)])
 
     if args.output_dir:
         save_plot(fig, 'data', args.output_dir)

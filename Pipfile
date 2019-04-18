@@ -11,6 +11,7 @@ pandas = "*"
 argparse = "*"
 pyyaml = "*"
 matplotlib = "*"
+scripts = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

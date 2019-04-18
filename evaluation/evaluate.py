@@ -1,9 +1,4 @@
-import sys
-
 from sklearn.metrics import average_precision_score
-
-sys.path.insert(0, '..')  # cannot include utils otherwise, not sure if there is better way
-
 import argparse
 from utils.argparse import ArgParser
 from utils.fs import load_csv, load_json

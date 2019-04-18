@@ -1,6 +1,3 @@
-import sys
-sys.path.insert(0, '..')  # cannot include utils otherwise, not sure if there is better way
-
 import argparse
 import os
 from utils.argparse import ArgParser
@@ -40,4 +37,3 @@ for alg_id, params in algorithms.items():
     if args.label_column_name:
         conf['dataset']['labelColumn'] = args.label_column_name
     save_yaml(conf, config_file_path)
-

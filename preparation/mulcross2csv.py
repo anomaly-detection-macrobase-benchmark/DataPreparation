@@ -1,7 +1,3 @@
-import sys
-
-sys.path.insert(0, '..')  # cannot include utils otherwise, not sure if there is better way
-
 import argparse
 from utils.argparse import ArgParser
 

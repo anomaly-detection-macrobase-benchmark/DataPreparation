@@ -12,8 +12,8 @@ arg_parser = ArgParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''Examples:
 plot.py datasets/mulcross.csv
-plote.py datasets/mulcross.csv --label is_anomaly --attr d1,d2
-plote.py datasets/mulcross.csv --label is_anomaly --output-dir output/plots --silent
+plot.py datasets/mulcross.csv --label is_anomaly --attr d1,d2
+plot.py datasets/mulcross.csv --label is_anomaly --output-dir output/plots --silent
 plot.py datasets''')
 arg_parser.add_argument('path', type=str, help='path to the CSV file or dir with CSV files')
 arg_parser.add_argument('--attr', type=lambda s: s.split(','), help='attributes to be plotted (default the first 2 columns)')

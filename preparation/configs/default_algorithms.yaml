@@ -15,7 +15,7 @@ algorithms:
     classifierSlide: 10000000
     allowDuplicates: false
 
-  mcd:
+  fastmcd:
     alpha: 0.9
     stoppingDelta: 0.00001
     trainSize: 4000

@@ -13,7 +13,7 @@ describe.py original_datasets
 describe.py original_datasets/shuttle-unsupervised-ad.csv --label is_anomaly''')
 arg_parser.add_argument('path', type=str, help='path to the CSV file or dir with CSV files')
 arg_parser.add_argument('--no-contents', action='store_true', help='do not print element values (head, tail)')
-arg_parser.add_argument('--label', metavar='label_column', dest='label_column_name', type=str, help='label column name')
+arg_parser.add_argument('--label', metavar='label_column', dest='label_column_name', default='is_anomaly', type=str, help='label column name (default is_anomaly)')
 args = arg_parser.parse_args()
 
 
@@ -26,7 +26,7 @@ def describe(file_path):
         print(df)
     print(df.describe(include='all'))
 
-    if args.label_column_name:
+    if args.label_column_name in df:
         print('\nLabel column: ')
         label_column = df[args.label_column_name]
         print('Value    %')
@@ -37,7 +37,7 @@ if os.path.isdir(args.path):
     file_paths = [os.path.join(args.path, f) for f in os.listdir(args.path) if f.endswith('.csv')]
     file_paths = sorted(file_paths, key=lambda f: os.path.getmtime(f))
     for file_path in file_paths:
-        print(file_path)
+        print(os.path.relpath(file_path, args.path))
         describe(file_path)
         print()
 else:

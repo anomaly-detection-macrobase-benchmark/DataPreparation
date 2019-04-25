@@ -34,7 +34,7 @@ if os.path.isdir(args.path):
     file_paths = [os.path.join(args.path, f) for f in os.listdir(args.path) if f.endswith('.json')]
     file_paths = sorted(file_paths, key=lambda f: os.path.getmtime(f))
     for file_path in file_paths:
-        print(file_path)
+        print(os.path.relpath(file_path, args.path))
         evaluate(file_path)
         print()
 else:

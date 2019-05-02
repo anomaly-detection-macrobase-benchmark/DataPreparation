@@ -1,4 +1,4 @@
-uri: csv://shuttle-unsupervised-ad.csv
+uri: csv://Shuttle/shuttle-eurecom.csv
 metricColumns:
   - d1
   - d2

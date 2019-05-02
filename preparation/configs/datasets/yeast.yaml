@@ -1,0 +1,11 @@
+uri: csv://Yeast/yeast-sub.csv
+metricColumns:
+  - mcg
+  - gvh
+  - alm
+  - mit
+  - erl
+  - pox
+  - vac
+  - nuc
+labelColumn: is_anomaly

@@ -8,7 +8,7 @@ arg_parser = ArgParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''Examples:
 output/configs --uri csv://dataset.csv --metrics d1,d2,d3,d4,d5,d6,d7,d8,d9 --label is_anomaly --algorithms iforest,mcod,lof-bkaluza,mcd,random --algorithms-config configs/default_algorithms.yaml
-output/configs --dataset-config configs/datasets/shuttle.yaml --algorithms iforest,mcod,lof-bkaluza,mcd,random --algorithms-config configs/default_algorithms.yaml''')
+output/configs --dataset-config configs/datasets/shuttle-goldstein.yaml --algorithms iforest,mcod,lof-bkaluza,mcd,random --algorithms-config configs/default_algorithms.yaml''')
 arg_parser.add_argument('output_dir', type=str, help='path to the dir where the configs will be created')
 arg_parser.add_argument('--uri', type=str, help='dataset path that will be written to the configs')
 arg_parser.add_argument('--metrics', metavar='COLUMNS', dest='metric_column_names', type=lambda s: s.split(','),

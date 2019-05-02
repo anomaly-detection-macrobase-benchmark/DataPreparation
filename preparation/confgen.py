@@ -25,6 +25,8 @@ args = arg_parser.parse_args()
 algorithms = {k: v for k, v in load_yaml(args.algorithms_config_file)['algorithms'].items() if k in args.included_algorithms}
 
 file_dataset_conf = load_yaml(args.dataset_config_file) if args.dataset_config_file else {}
+if 'dataset' in file_dataset_conf:
+    file_dataset_conf = file_dataset_conf['dataset']
 args_dataset_conf = {
     'uri': args.uri,
     'metricColumns': args.metric_column_names,

@@ -14,7 +14,8 @@ arg_parser = ArgParser(
     epilog='''Examples:''')
 arg_parser.add_argument('result_dir', type=str, help='path to the directory with the benchmark result')
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')
-arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', type=str, help='label column name')
+arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', default='is_anomaly', type=str,
+                        help='label column name if missing in the results (default is_anomaly)')
 arg_parser.add_argument('--title', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--scale', type=str, default='linear', help='plot axis scale, linear or log')
 arg_parser.add_argument('--output-dir', type=str, help='path to the directory for saving plots')
@@ -97,15 +98,14 @@ plt.xscale(args.scale)
 if args.output_dir:
     save_plot(fig, 'memory', args.output_dir)
 
-if args.label_column_name:
+data_file_ids = {r['config']['dataset']['id'] for r in results}
+datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
+
+if all([args.label_column_name in d for _, d in datasets.items()]):
+    labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
+
     def pr_auc(scores, labels):
         return average_precision_score(labels, scores)
-
-
-    data_file_ids = {r['config']['dataset']['id'] for r in results}
-    datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
-
-    labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
 
     fig = plt.figure(figsize=[7, 5])
     plt.suptitle(args.title)

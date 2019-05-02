@@ -1,32 +1,74 @@
 algorithms:
   iforest:
-    treesCount: 100
-    subsampleSize: 256
-    trainSize: 4000
+    parameters:
+      treesCount: 100
+      subsampleSize: 256
+      trainSize: 4000
 
   lof-bkaluza:
-    knn: 15
-    trainSize: 200
+    parameters:
+      knn: 15
+      trainSize: 200
 
   mcod:
-    maxDistance: 13.0
-    minNeighborCount: 150
-    classifierWindowSize: 10000000
-    classifierSlide: 10000000
-    allowDuplicates: false
+    parameters:
+      maxDistance: 13.0
+      minNeighborCount: 150
+      classifierWindowSize: 10000000
+      classifierSlide: 10000000
+      allowDuplicates: false
+    gridsearch:
+      measure: pr
+      parameters:
+        maxDistance:
+          - 0.1
+          - 0.2
+          - 0.5
+          - 1.0
+          - 2.0
+          - 3.0
+          - 6.0
+          - 8.0
+          - 10.0
+          - 15.0
+          - 30.0
+          - 50.0
+          - 80.0
+          - 100.0
+        minNeighborCount:
+          - 3
+          - 5
+          - 10
+          - 15
+          - 20
+          - 30
+          - 50
+          - 80
+          - 120
+          - 150
+          - 250
+          - 300
+          - 400
+          - 500
+          - 1000
+          - 2000
 
   fastmcd:
-    alpha: 0.9
-    stoppingDelta: 0.00001
-    trainSize: 4000
+    parameters:
+      alpha: 0.9
+      stoppingDelta: 0.00001
+      trainSize: 4000
 
   percentile:
-    cutoff: 0.5
-    includeHi: true
-    includeLo: true
+    parameters:
+      cutoff: 0.5
+      includeHi: true
+      includeLo: true
 
   mad:
-    trainSize: 4000
+    parameters:
+      trainSize: 4000
 
   random:
-    binary: false
+    parameters:
+      binary: false

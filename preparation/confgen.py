@@ -20,6 +20,7 @@ arg_parser.add_argument('--algorithms-config', metavar='FILE', dest='algorithms_
                         type=str, required=True, help='file with parameters of the algorithms')
 arg_parser.add_argument('--dataset-config', metavar='FILE', dest='dataset_config_file', type=str,
                         help='file with the dataset config (or dir), instead of --uri, --metrics, --label args (still can be used to override)')
+arg_parser.add_argument('--no-gs', action='store_true', help='do not add grid search configs')
 args = arg_parser.parse_args()
 
 
@@ -37,15 +38,20 @@ def generate(dataset_config_file_path):
     args_dataset_conf = {k: v for k, v in args_dataset_conf.items() if v is not None}
     dataset_conf = {**file_dataset_conf, **args_dataset_conf}
 
-    for alg_id, params in algorithms.items():
+    for alg_id, alg in algorithms.items():
         config_file_path = os.path.join(args.output_dir, '%s_%s.yaml' % (file_name_without_ext(dataset_conf['uri']), alg_id))
         print(config_file_path)
+
+        algorithm_conf = {
+            'id': alg_id,
+            'parameters': alg['parameters']
+        }
+        if 'gridsearch' in alg and not args.no_gs:
+            algorithm_conf['gridsearch'] = alg['gridsearch']
+
         conf = {
             'dataset': dataset_conf,
-            'algorithm': {
-                'id': alg_id,
-                'parameters': params
-            }
+            'algorithm': algorithm_conf
         }
         save_yaml(conf, config_file_path)
 

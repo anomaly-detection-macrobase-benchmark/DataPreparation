@@ -19,30 +19,43 @@ arg_parser.add_argument('--algorithms', dest='included_algorithms', type=lambda 
 arg_parser.add_argument('--algorithms-config', metavar='FILE', dest='algorithms_config_file',
                         type=str, required=True, help='file with parameters of the algorithms')
 arg_parser.add_argument('--dataset-config', metavar='FILE', dest='dataset_config_file', type=str,
-                        help='file with the dataset config, instead of --uri, --metrics, --label args (still can be used to override)')
+                        help='file with the dataset config (or dir), instead of --uri, --metrics, --label args (still can be used to override)')
 args = arg_parser.parse_args()
 
-algorithms = {k: v for k, v in load_yaml(args.algorithms_config_file)['algorithms'].items() if k in args.included_algorithms}
 
-file_dataset_conf = load_yaml(args.dataset_config_file) if args.dataset_config_file else {}
-if 'dataset' in file_dataset_conf:
-    file_dataset_conf = file_dataset_conf['dataset']
-args_dataset_conf = {
-    'uri': args.uri,
-    'metricColumns': args.metric_column_names,
-    'labelColumn': args.label_column_name
-}
-args_dataset_conf = {k:v for k,v in args_dataset_conf.items() if v is not None}
-dataset_conf = {**file_dataset_conf, **args_dataset_conf}
+def generate(dataset_config_file_path):
+    algorithms = {k: v for k, v in load_yaml(args.algorithms_config_file)['algorithms'].items() if k in args.included_algorithms}
 
-for alg_id, params in algorithms.items():
-    config_file_path = os.path.join(args.output_dir, '%s_%s.yaml' % (file_name_without_ext(dataset_conf['uri']), alg_id))
-    print(config_file_path)
-    conf = {
-        'dataset': dataset_conf,
-        'algorithm': {
-            'id': alg_id,
-            'parameters': params
-        }
+    file_dataset_conf = load_yaml(dataset_config_file_path) if dataset_config_file_path else {}
+    if 'dataset' in file_dataset_conf:
+        file_dataset_conf = file_dataset_conf['dataset']
+    args_dataset_conf = {
+        'uri': args.uri,
+        'metricColumns': args.metric_column_names,
+        'labelColumn': args.label_column_name
     }
-    save_yaml(conf, config_file_path)
+    args_dataset_conf = {k: v for k, v in args_dataset_conf.items() if v is not None}
+    dataset_conf = {**file_dataset_conf, **args_dataset_conf}
+
+    for alg_id, params in algorithms.items():
+        config_file_path = os.path.join(args.output_dir, '%s_%s.yaml' % (file_name_without_ext(dataset_conf['uri']), alg_id))
+        print(config_file_path)
+        conf = {
+            'dataset': dataset_conf,
+            'algorithm': {
+                'id': alg_id,
+                'parameters': params
+            }
+        }
+        save_yaml(conf, config_file_path)
+
+
+if args.dataset_config_file and os.path.isdir(args.dataset_config_file):
+    file_paths = [os.path.join(args.dataset_config_file, f) for f in os.listdir(args.dataset_config_file) if f.endswith('.yaml')]
+    file_paths = sorted(file_paths, key=lambda f: os.path.getmtime(f))
+    for file_path in file_paths:
+        print(os.path.relpath(file_path, args.dataset_config_file))
+        generate(file_path)
+        print()
+else:
+    generate(args.dataset_config_file)

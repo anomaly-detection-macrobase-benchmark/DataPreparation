@@ -27,17 +27,17 @@ algorithms:
     parameters:
       knn: 15
       trainSize: 400
-      gridsearch:
-        measure: pr
-        parameters:
-          knn:
-            - 15
-            - 20
-            - 30
-            - 40
-            - 50
-            - 80
-            - 100
+    gridsearch:
+      measure: pr
+      parameters:
+        knn:
+          - 15
+          - 20
+          - 30
+          - 40
+          - 50
+          - 80
+          - 100
 
   mcod:
     parameters:

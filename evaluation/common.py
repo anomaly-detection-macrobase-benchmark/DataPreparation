@@ -5,7 +5,7 @@ from sklearn.metrics import average_precision_score
 from utils.fs import load_json, load_csv
 
 
-def load_execution_result(file_path, include_scores=False, result_dir=''):
+def load_execution_result(file_path, include_scores=False, result_dir='', include_labels=False):
     r = load_json(file_path)
 
     result = {
@@ -17,7 +17,10 @@ def load_execution_result(file_path, include_scores=False, result_dir=''):
         'algorithmOutputFilePath': r['result']['algorithmOutputFilePath']
     }
     if include_scores:
-        result['scores'] = load_csv(os.path.join(result_dir, result['algorithmOutputFilePath']))['_OUTLIER'].values
+        data = load_csv(os.path.join(result_dir, result['algorithmOutputFilePath']))
+        result['scores'] = data['_OUTLIER'].values
+        if include_labels:
+            result['labels'] = data[r['config']['dataset']['labelColumn']].values
     return result
 
 

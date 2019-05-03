@@ -1,9 +1,7 @@
 import itertools
 from operator import itemgetter
-from sklearn.metrics import average_precision_score
 import argparse
-
-from evaluation.common import load_execution_result
+from evaluation.common import load_execution_result, pr_auc
 from utils.argparse import ArgParser
 from utils.fs import load_csv
 from utils.plots import marker_cycle, color_cycle, save_plot
@@ -96,9 +94,6 @@ datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_id
 
 if all([args.label_column_name in d for _, d in datasets.items()]):
     labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
-
-    def pr_auc(scores, labels):
-        return average_precision_score(labels, scores)
 
     fig = plt.figure(figsize=[7, 5])
     plt.suptitle(args.title)

@@ -2,8 +2,10 @@ import itertools
 from operator import itemgetter
 from sklearn.metrics import average_precision_score
 import argparse
+
+from evaluation.common import load_execution_result
 from utils.argparse import ArgParser
-from utils.fs import load_csv, load_json
+from utils.fs import load_csv
 from utils.plots import marker_cycle, color_cycle, save_plot
 import matplotlib.pyplot as plt
 import os
@@ -24,16 +26,7 @@ args = arg_parser.parse_args()
 
 results_file_paths = [os.path.join(args.result_dir, f) for f in os.listdir(args.result_dir) if f.endswith('.json')]
 
-results = [load_json(f) for f in results_file_paths]
-
-execution_results = [{
-    'trainingTime': r['result']['trainingTime'],
-    'classificationTime': r['result']['classificationTime'],
-    'maxMemory': r['result']['maxMemory'],
-    'scores': load_csv(os.path.join(args.result_dir, r['result']['algorithmOutputFilePath']))['_OUTLIER'].values,
-    'algorithm': r['config']['algorithm']['id'],
-    'dataset': r['config']['dataset']['id']
-} for r in results]
+execution_results = [load_execution_result(f, include_scores=True, result_dir=args.result_dir) for f in results_file_paths]
 execution_results.sort(key=itemgetter('algorithm'))
 
 algorithm_results = {id: sorted(list(g), key=lambda x: len(x['scores']))
@@ -98,7 +91,7 @@ plt.xscale(args.scale)
 if args.output_dir:
     save_plot(fig, 'memory', args.output_dir)
 
-data_file_ids = {r['config']['dataset']['id'] for r in results}
+data_file_ids = {r['dataset'] for r in execution_results}
 datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
 
 if all([args.label_column_name in d for _, d in datasets.items()]):

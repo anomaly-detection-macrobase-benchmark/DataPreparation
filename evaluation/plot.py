@@ -23,6 +23,7 @@ arg_parser.add_argument('--threshold', metavar='score_threshold', default=0.5, t
 arg_parser.add_argument('--title', default='{file_name}', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--output-dir', type=str, help='path to the directory for saving plots')
 arg_parser.add_argument('--silent', action='store_true', help='do not show plots')
+arg_parser.add_argument('--marker-size', default=plt.rcParams['lines.markersize'] ** 2, type=float, help='marker size (default 36)')
 args = arg_parser.parse_args()
 
 
@@ -67,7 +68,7 @@ def process(file_path):
 
     fig = plt.figure()
     plt.suptitle(title)
-    plt.scatter(df[attributes[0]], df[attributes[1]], c=[result_color_map[r] for r in results])
+    plt.scatter(df[attributes[0]], df[attributes[1]], c=[result_color_map[r] for r in results], s=args.marker_size)
     plt.xlabel(attributes[0])
     plt.ylabel(attributes[1])
     if has_scores:

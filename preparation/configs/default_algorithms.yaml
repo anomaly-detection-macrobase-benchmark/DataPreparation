@@ -3,7 +3,7 @@ algorithms:
     parameters:
       treesCount: 100
       subsampleSize: 256
-      trainSize: 4000
+      trainSize: 30000
     gridsearch:
       measure: pr
       parameters:

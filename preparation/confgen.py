@@ -51,7 +51,7 @@ def generate(dataset_config_file_path):
 
         conf = {
             'dataset': dataset_conf,
-            'algorithm': algorithm_conf
+            'classifiers': [algorithm_conf]
         }
         save_yaml(conf, config_file_path)
 

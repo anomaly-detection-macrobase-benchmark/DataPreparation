@@ -22,12 +22,12 @@ args = arg_parser.parse_args()
 
 results_file_paths = [os.path.join(args.result_dir, f) for f in os.listdir(args.result_dir) if f.endswith('.json')]
 
-execution_results = [load_execution_result(f, include_scores=True, result_dir=args.result_dir, include_labels=True)
+execution_results = [load_execution_result(f, include_scores=True, include_labels=True)
                      for f in results_file_paths]
-execution_results.sort(key=itemgetter('algorithm'))
+execution_results.sort(key=itemgetter('classifier'))
 
 algorithm_results = {id: sorted(list(g), key=lambda x: x['dataset'])
-                     for id, g in itertools.groupby(execution_results, lambda item: item['algorithm'])}
+                     for id, g in itertools.groupby(execution_results, lambda item: item['classifier'])}
 
 
 def clean_dataset_name(s):

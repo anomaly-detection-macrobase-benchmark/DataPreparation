@@ -1,7 +1,7 @@
 from sklearn.metrics import average_precision_score
 import argparse
 from utils.argparse import ArgParser
-from utils.fs import load_csv, load_json
+from utils.fs import load_csv, load_json, list_files
 import os
 
 arg_parser = ArgParser(
@@ -31,7 +31,7 @@ def evaluate(file_path):
 
 
 if os.path.isdir(args.path):
-    file_paths = [os.path.join(args.path, f) for f in os.listdir(args.path) if f.endswith('.json')]
+    file_paths = [f for f in list_files(args.path) if f.endswith('.json')]
     file_paths = sorted(file_paths, key=lambda f: os.path.getmtime(f))
     for file_path in file_paths:
         print(os.path.relpath(file_path, args.path))

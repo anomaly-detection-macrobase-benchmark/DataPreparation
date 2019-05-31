@@ -3,7 +3,7 @@ from operator import itemgetter
 import argparse
 from evaluation.common import load_execution_result, pr_auc
 from utils.argparse import ArgParser
-from utils.fs import load_csv
+from utils.fs import load_csv, list_files
 from utils.plots import marker_cycle, color_cycle, save_plot
 import matplotlib.pyplot as plt
 import os
@@ -22,7 +22,7 @@ arg_parser.add_argument('--output-dir', type=str, help='path to the directory fo
 arg_parser.add_argument('--silent', action='store_true', help='do not show plots')
 args = arg_parser.parse_args()
 
-results_file_paths = [os.path.join(args.result_dir, f) for f in os.listdir(args.result_dir) if f.endswith('.json')]
+results_file_paths = [f for f in list_files(args.result_dir) if f.endswith('.json')]
 
 execution_results = [load_execution_result(f, include_scores=True) for f in results_file_paths]
 execution_results.sort(key=itemgetter('classifier'))

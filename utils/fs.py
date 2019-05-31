@@ -39,3 +39,9 @@ def save_yaml(data, file_path):
 def load_json(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
+
+
+def list_files(path, recursive=True):
+    if recursive:
+        return [os.path.join(dp, f) for dp, _, fn in os.walk(path) for f in fn]
+    return [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]

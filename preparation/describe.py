@@ -8,9 +8,9 @@ arg_parser = ArgParser(
     description='''Prints dataset info''',
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''Example:
-describe.py original_datasets/shuttle-unsupervised-ad.csv
-describe.py original_datasets
-describe.py original_datasets/shuttle-unsupervised-ad.csv --label is_anomaly''')
+describe.py example_datasets/shuttle-unsupervised-ad.csv
+describe.py example_datasets
+describe.py example_datasets/shuttle-unsupervised-ad.csv --label is_anomaly''')
 arg_parser.add_argument('path', type=str, help='path to the CSV file or dir with CSV files')
 arg_parser.add_argument('--no-contents', action='store_true', help='do not print element values (head, tail)')
 arg_parser.add_argument('--label', metavar='label_column', dest='label_column_name', default='is_anomaly', type=str, help='label column name (default is_anomaly)')

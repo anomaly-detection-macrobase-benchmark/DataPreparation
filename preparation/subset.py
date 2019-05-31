@@ -7,8 +7,8 @@ arg_parser = ArgParser(
     description='''Splits dataset into random subsets of specified size''',
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''Example:
-subset.py original_datasets/shuttle-unsupervised-ad.csv output/shuttle_{size}.csv 10000,20000,30000,40000
-subset.py original_datasets/shuttle-unsupervised-ad.csv output/shuttle_{size}.csv 10K,20K,30K,40K''')
+subset.py example_datasets/shuttle-unsupervised-ad.csv output/shuttle_{size}.csv 10000,20000,30000,40000
+subset.py example_datasets/shuttle-unsupervised-ad.csv output/shuttle_{size}.csv 10K,20K,30K,40K''')
 arg_parser.add_argument('file', type=str, help='path to the CSV file')
 arg_parser.add_argument('output_file', type=str, help='path to the CSV file')
 arg_parser.add_argument('sizes', type=lambda s: [sz.parse_size(item) for item in s.split(',')], help='sizes')

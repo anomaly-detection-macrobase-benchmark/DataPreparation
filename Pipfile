@@ -12,6 +12,7 @@ argparse = "*"
 pyyaml = "*"
 matplotlib = "*"
 scripts = {editable = true,path = "."}
+xlsxwriter = "*"
 
 [requires]
 python_version = "3.7"

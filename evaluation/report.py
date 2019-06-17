@@ -47,10 +47,10 @@ def write_datasets_sheet():
         dataset = load_csv(os.path.join(args.data_dir, data_file_id))
         stats = load_stats(dataset, 'is_anomaly')
 
-        summaries.append([stats['row_count'], stats['column_count'], stats['anomaly_percent'] * 100])
+        summaries.append([stats.row_count, stats.column_count, stats.anomaly_count / stats.row_count * 100])
 
         worksheet.write(details_row, 0, data_file_id, bold)
-        col_stats: pd.DataFrame = stats['columns']
+        col_stats: pd.DataFrame = stats.columns
         col_stats.to_excel(pd_excel_writer, sheet_name=worksheet.name, startrow=details_row + 1)
         details_row += col_stats.shape[0] + 3
 

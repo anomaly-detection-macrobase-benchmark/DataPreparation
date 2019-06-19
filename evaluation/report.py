@@ -1,14 +1,12 @@
 import argparse
 import os
 
-import pandas as pd
 from openpyxl import Workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
 
 from utils.argparse import ArgParser
 from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
-from utils.xlsx import autofit, append_blank_rows
+from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows
 
 arg_parser = ArgParser(
     description='''Generates a report.''',
@@ -40,7 +38,7 @@ def write_datasets_sheet():
         stats_dict[data_file_id] = stats
 
     # main stats table
-    sheet.append(['Samples', 'Dims', '% anomalies'])
+    sheet.append(['Dataset', 'Samples', 'Dims', '% anomalies'])
     for data_file_id, stats in stats_dict.items():
         sheet.append([data_file_id, stats.row_count, stats.column_count, stats.anomaly_count / stats.row_count * 100])
 
@@ -49,10 +47,7 @@ def write_datasets_sheet():
         append_blank_rows(sheet, 2)
 
         sheet.append([data_file_id])
-        col_stats: pd.DataFrame = stats.columns
-        df_rows = list(dataframe_to_rows(col_stats, index=True, header=True))
-        df_rows.pop(1)  # https://groups.google.com/forum/#!topic/openpyxl-users/N9QpvfzkJIM
-        for r in df_rows:
+        for r in pandas_dataframe_to_rows(stats.columns):
             sheet.append(r)
 
     autofit(sheet)

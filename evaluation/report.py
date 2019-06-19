@@ -9,9 +9,10 @@ from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
 
 arg_parser = ArgParser(
-    description=''' ''',
+    description='''Generates a report.''',
     formatter_class=argparse.RawDescriptionHelpFormatter,
-    epilog='''Examples:''')
+    epilog='''Examples:
+report.py ../../macrobase/alexp/output output/report.xlsx --data-dir ../../datasets''')
 arg_parser.add_argument('result_dir', type=str, help='path to the directory with the benchmark result')
 arg_parser.add_argument('output_file', type=str, help='path to the output file (Excel .xlsx)')
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')

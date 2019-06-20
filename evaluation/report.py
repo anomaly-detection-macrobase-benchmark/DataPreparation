@@ -6,6 +6,7 @@ from openpyxl import Workbook
 from utils.argparse import ArgParser
 from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
+import utils.xlsx as xlsx
 from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows
 
 arg_parser = ArgParser(
@@ -27,6 +28,8 @@ data_file_ids = {r['config']['dataset']['id'] for r in execution_results}
 workbook = Workbook()
 workbook.remove(workbook.active)  # remove default sheet
 
+xlsx.add_common_styles(workbook)
+
 
 def write_datasets_sheet():
     sheet = workbook.create_sheet('Datasets')
@@ -47,6 +50,7 @@ def write_datasets_sheet():
         append_blank_rows(sheet, 2)
 
         sheet.append([data_file_id])
+        sheet.cell(sheet.max_row, 1).style = 'bold'
         for r in pandas_dataframe_to_rows(stats.columns):
             sheet.append(r)
 

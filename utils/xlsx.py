@@ -1,3 +1,4 @@
+from openpyxl.styles import NamedStyle, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.dataframe import dataframe_to_rows
 
@@ -29,3 +30,7 @@ def pandas_dataframe_to_rows(df, index=True, header=True):
     if index:
         df_rows.pop(1)  # there is an empty row, but apparently it's not a bug https://groups.google.com/forum/#!topic/openpyxl-users/N9QpvfzkJIM
     return df_rows
+
+
+def add_common_styles(workbook):
+    workbook.add_named_style(NamedStyle('bold', font=Font(bold=True)))

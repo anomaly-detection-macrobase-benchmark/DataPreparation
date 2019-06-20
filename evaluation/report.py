@@ -7,7 +7,7 @@ from utils.argparse import ArgParser
 from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
 import utils.xlsx as xlsx
-from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows
+from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count
 
 arg_parser = ArgParser(
     description='''Generates a report.''',
@@ -41,9 +41,11 @@ def write_datasets_sheet():
         stats_dict[data_file_id] = stats
 
     # main stats table
-    sheet.append(['Dataset', 'Samples', 'Dims', '% anomalies'])
+    header = ['Dataset', 'Samples', 'Dims', '% anomalies']
+    sheet.append(header)
     for data_file_id, stats in stats_dict.items():
         sheet.append([data_file_id, stats.row_count, stats.column_count, stats.anomaly_count / stats.row_count * 100])
+    mark_table(sheet, xlref_range_count(1, 1, len(data_file_ids) + 1, len(header)))
 
     # column stats for each dataset
     for data_file_id, stats in stats_dict.items():
@@ -51,8 +53,11 @@ def write_datasets_sheet():
 
         sheet.append([data_file_id])
         sheet.cell(sheet.max_row, 1).style = 'bold'
-        for r in pandas_dataframe_to_rows(stats.columns):
+        table_start_row = sheet.max_row + 1
+        df_rows = pandas_dataframe_to_rows(stats.columns, top_left_value='Column stats')
+        for r in df_rows:
             sheet.append(r)
+        mark_table(sheet, xlref_range_count(table_start_row, 1, len(df_rows), len(df_rows[0])))
 
     autofit(sheet)
 

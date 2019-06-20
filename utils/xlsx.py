@@ -45,10 +45,11 @@ def cell_value_to_text(value):
 
 
 def autofit(sheet):
+    min_width = 10
     for column_cells in sheet.columns:
         col = column_cells[0].column
         length = max(len(cell_value_to_text(cell.value)) for cell in column_cells)
-        sheet.column_dimensions[get_column_letter(col)].width = length
+        sheet.column_dimensions[get_column_letter(col)].width = max(length + 1, min_width)
 
 
 def append_blank_rows(sheet, count):

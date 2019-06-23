@@ -50,7 +50,7 @@ def compact_classifier_parameters(items):
             del result_item['output_file']
             result_item['output_files'] = []
             result.append(result_item)
-        result_item['output_files'] += [item['output_file']]
+        result_item['output_files'].append(item['output_file'])
     return result
 
 

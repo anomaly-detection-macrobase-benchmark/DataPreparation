@@ -1,2 +1,5 @@
 def find_first(collection, predicate):
-    return next((x for x in collection if predicate(x)), None)
+    for item in collection:
+        if predicate(item):
+            return item
+    return None

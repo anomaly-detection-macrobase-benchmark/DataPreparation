@@ -16,6 +16,8 @@ arg_parser.add_argument('result_dir', type=str, help='path to the directory with
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')
 arg_parser.add_argument('--title', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--output-dir', type=str, help='path to the directory for saving plots')
+arg_parser.add_argument('--plot-name', default='{dt}_{suptitle}_{name}', type=str,
+                        help='name format of plot files, default "{dt}_{suptitle}_{name}"')
 arg_parser.add_argument('--silent', action='store_true', help='do not show plots')
 args = arg_parser.parse_args()
 
@@ -44,7 +46,7 @@ dataset_names = [clean_dataset_name(name) for name in sorted(dataset_id)]
 xticks_values = np.arange(0, len(dataset_names), 1)
 
 fig = plt.figure(figsize=[9, 5])
-fig.subplots_adjust(bottom=0.2)
+fig.subplots_adjust(bottom=0.22)
 plt.suptitle(args.title)
 color = color_cycle()
 marker = marker_cycle()
@@ -60,7 +62,7 @@ plt.ylabel('PR AUC')
 plt.grid()
 
 if args.output_dir:
-    save_plot(fig, 'auc', args.output_dir)
+    save_plot(fig, 'auc', args.output_dir, name_format=args.plot_name)
 
 if not args.silent:
     plt.show()

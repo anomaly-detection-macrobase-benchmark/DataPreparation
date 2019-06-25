@@ -1,9 +1,11 @@
 import argparse
 import itertools
 import os
+import tempfile
 from operator import itemgetter
 
 from openpyxl import Workbook
+from openpyxl.drawing.image import Image
 
 from utils.argparse import ArgParser
 from utils.collections import find_first
@@ -11,6 +13,7 @@ from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
 import utils.xlsx as xlsx
 from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count
+import utils.project as project
 
 arg_parser = ArgParser(
     description='''Generates a report.''',
@@ -119,7 +122,25 @@ def write_classifiers_sheet():
     autofit(sheet)
 
 
-write_datasets_sheet()
-write_classifiers_sheet()
+def write_evaluation_sheet():
+    sheet = workbook.create_sheet('Evaluation')
 
-workbook.save(args.output_file)
+    project.run_script('evaluation/quality.py', [args.result_dir,
+                                                 '--data-dir', args.data_dir,
+                                                 '--output-dir', tmp_dir_path,
+                                                 '--plot-name', '{name}',
+                                                 '--title', 'PR AUC on all datasets',
+                                                 '--silent'])
+    img = Image(os.path.join(tmp_dir_path, 'auc.png'))
+    img.anchor = 'A1'
+    sheet.add_image(img)
+
+    autofit(sheet)
+
+
+with tempfile.TemporaryDirectory() as tmp_dir_path:
+    write_datasets_sheet()
+    write_classifiers_sheet()
+    write_evaluation_sheet()
+
+    workbook.save(args.output_file)

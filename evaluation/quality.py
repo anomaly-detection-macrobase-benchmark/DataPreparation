@@ -6,7 +6,6 @@ from utils.argparse import ArgParser
 from utils.fs import file_name_without_ext, list_files
 from utils.plots import marker_cycle, color_cycle, save_plot
 import matplotlib.pyplot as plt
-import os
 import numpy as np
 
 arg_parser = ArgParser(
@@ -45,7 +44,7 @@ dataset_names = [clean_dataset_name(name) for name in sorted(dataset_id)]
 xticks_values = np.arange(0, len(dataset_names), 1)
 
 fig = plt.figure(figsize=[9, 5])
-fig.subplots_adjust(bottom=0.2) # or whatever
+fig.subplots_adjust(bottom=0.2)
 plt.suptitle(args.title)
 color = color_cycle()
 marker = marker_cycle()

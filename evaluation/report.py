@@ -5,6 +5,7 @@ import tempfile
 from operator import itemgetter
 
 from openpyxl import Workbook
+from openpyxl.formatting.rule import ColorScaleRule
 from sklearn.metrics import average_precision_score
 
 from utils.argparse import ArgParser
@@ -146,6 +147,10 @@ def write_evaluation_sheet():
     mark_table(sheet, xlref_range_count(2, 1, len(pr_table_rows), len(pr_table_rows[0])))
     pr_table_data_ref = xlref_range_count(3, 2, len(pr_table_rows) - 1, len(pr_table_rows[0]) - 1)
     set_number_format(sheet, pr_table_data_ref)
+    sheet.conditional_formatting.add(pr_table_data_ref,
+                                     ColorScaleRule(start_type='percentile', start_value=10, start_color='F8696B',
+                                                    mid_type='percentile', mid_value=50, mid_color='FFEB84',
+                                                    end_type='percentile', end_value=90, end_color='63BE7B'))
 
     row_index = len(pr_table_rows) + 4
 

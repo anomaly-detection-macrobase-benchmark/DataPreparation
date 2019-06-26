@@ -16,9 +16,11 @@ arg_parser.add_argument('result_dir', type=str, help='path to the directory with
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')
 arg_parser.add_argument('--label', metavar='COLUMN', dest='label_column_name', default='is_anomaly', type=str,
                         help='label column name if missing in the results (default is_anomaly)')
-arg_parser.add_argument('--title', type=str, help='title displayed on the plots')
+arg_parser.add_argument('--title', default='', type=str, help='title displayed on the plots')
 arg_parser.add_argument('--scale', type=str, default='linear', help='plot axis scale, linear or log')
 arg_parser.add_argument('--output-dir', type=str, help='path to the directory for saving plots')
+arg_parser.add_argument('--plot-name', default='{dt}_{suptitle}_{name}', type=str,
+                        help='name format of plot files, default "{dt}_{suptitle}_{name}"')
 arg_parser.add_argument('--silent', action='store_true', help='do not show plots')
 args = arg_parser.parse_args()
 
@@ -36,7 +38,7 @@ def has_training(group):
 
 
 fig = plt.figure(figsize=[14, 5])
-plt.suptitle(args.title)
+plt.suptitle(args.title.format(name='Time'))
 
 plt.subplot(1, 2, 1)
 color = color_cycle()
@@ -69,10 +71,10 @@ plt.yscale(args.scale)
 plt.xscale(args.scale)
 
 if args.output_dir:
-    save_plot(fig, 'time', args.output_dir)
+    save_plot(fig, 'time', args.output_dir, name_format=args.plot_name)
 
 fig = plt.figure(figsize=[7, 5])
-plt.suptitle(args.title)
+plt.suptitle(args.title.format(name='Memory'))
 color = color_cycle()
 marker = marker_cycle()
 
@@ -87,7 +89,7 @@ plt.yscale(args.scale)
 plt.xscale(args.scale)
 
 if args.output_dir:
-    save_plot(fig, 'memory', args.output_dir)
+    save_plot(fig, 'memory', args.output_dir, name_format=args.plot_name)
 
 data_file_ids = {r['dataset'] for r in execution_results}
 datasets = {id: load_csv(os.path.join(args.data_dir, id)) for id in data_file_ids}
@@ -96,7 +98,7 @@ if all([args.label_column_name in d for _, d in datasets.items()]):
     labels = {id: d[args.label_column_name].values for id, d in datasets.items()}
 
     fig = plt.figure(figsize=[7, 5])
-    plt.suptitle(args.title)
+    plt.suptitle(args.title.format(name='PR AUC'))
     color = color_cycle()
     marker = marker_cycle()
 
@@ -110,7 +112,7 @@ if all([args.label_column_name in d for _, d in datasets.items()]):
     plt.xscale(args.scale)
 
     if args.output_dir:
-        save_plot(fig, 'auc', args.output_dir)
+        save_plot(fig, 'auc', args.output_dir, name_format=args.plot_name)
 
 if not args.silent:
     plt.show()

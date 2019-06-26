@@ -11,7 +11,7 @@ from utils.collections import find_first
 from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
 import utils.xlsx as xlsx
-from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count, xlref,\
+from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count, xlref, \
     add_image
 import utils.project as project
 
@@ -23,6 +23,7 @@ report.py ../../macrobase/alexp/output output/report.xlsx --data-dir ../../datas
 arg_parser.add_argument('result_dir', type=str, help='path to the directory with the benchmark result')
 arg_parser.add_argument('output_file', type=str, help='path to the output file (Excel .xlsx)')
 arg_parser.add_argument('--data-dir', type=str, help='path to the directory with the datasets')
+arg_parser.add_argument('--sizechanges', action='store_true', help='include sizechanges.py script output')
 args = arg_parser.parse_args()
 
 results_file_paths = [f for f in list_files(args.result_dir) if f.endswith('.json')]
@@ -125,13 +126,30 @@ def write_classifiers_sheet():
 def write_evaluation_sheet():
     sheet = workbook.create_sheet('Evaluation')
 
+    row_index = 1
+
     project.run_script('evaluation/quality.py', [args.result_dir,
                                                  '--data-dir', args.data_dir,
                                                  '--output-dir', tmp_dir_path,
                                                  '--plot-name', '{name}',
                                                  '--title', 'PR AUC on all datasets',
                                                  '--silent'])
-    add_image(sheet, xlref(1, 1), os.path.join(tmp_dir_path, 'auc.png'))
+    add_image(sheet, xlref(row_index, 1), os.path.join(tmp_dir_path, 'auc.png'))
+    row_index += 26
+
+    if args.sizechanges:
+        project.run_script('evaluation/sizechanges.py', [args.result_dir,
+                                                         '--data-dir', args.data_dir,
+                                                         '--output-dir', tmp_dir_path,
+                                                         '--plot-name', 'size-{name}',
+                                                         '--scale', 'log',
+                                                         '--title', '{name} when changing dataset size',
+                                                         '--silent'])
+        add_image(sheet, xlref(row_index, 1), os.path.join(tmp_dir_path, 'size-time.png'))
+        add_image(sheet, xlref(row_index, 21), os.path.join(tmp_dir_path, 'size-memory.png'))
+        row_index += 25
+        add_image(sheet, xlref(row_index, 1), os.path.join(tmp_dir_path, 'size-auc.png'))
+        row_index += 26
 
     autofit(sheet)
 

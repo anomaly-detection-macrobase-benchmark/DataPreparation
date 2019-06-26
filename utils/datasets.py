@@ -32,3 +32,8 @@ def load_dataset(dataset_id, dir_path='', label_column_name='is_anomaly') -> Dat
     return Dataset(id=dataset_id,
                    stats=load_stats(df, label_column_name),
                    labels=labels)
+
+
+def load_column(csv_path, column_name):
+    df = load_csv(csv_path, [column_name])
+    return df[column_name].values

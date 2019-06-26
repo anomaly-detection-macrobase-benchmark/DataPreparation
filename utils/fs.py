@@ -16,8 +16,8 @@ def file_name_without_ext(file_path):
     return os.path.splitext(os.path.basename(file_path))[0]
 
 
-def load_csv(file_path) -> pd.DataFrame:
-    return pd.read_csv(file_path)
+def load_csv(file_path, columns=None) -> pd.DataFrame:
+    return pd.read_csv(file_path, usecols=columns)
 
 
 def save_csv(df, file_path):

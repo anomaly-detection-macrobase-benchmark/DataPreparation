@@ -5,10 +5,11 @@ import tempfile
 from operator import itemgetter
 
 from openpyxl import Workbook
+from sklearn.metrics import average_precision_score
 
 from utils.argparse import ArgParser
 from utils.collections import find_first
-from utils.datasets import load_dataset
+from utils.datasets import load_dataset, load_column
 from utils.fs import load_json, list_files
 import utils.xlsx as xlsx
 from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count, xlref, \
@@ -28,7 +29,9 @@ args = arg_parser.parse_args()
 
 results_file_paths = [f for f in list_files(args.result_dir) if f.endswith('.json')]
 
-execution_results = [load_json(f) for f in results_file_paths]
+execution_results = [{**load_json(f),
+                      **{'_file': f, '_dir': os.path.dirname(f)}}
+                     for f in results_file_paths]
 
 dataset_ids = {r['config']['dataset']['id'] for r in execution_results}
 datasets = {dataset_id: load_dataset(dataset_id, args.data_dir, 'is_anomaly') for dataset_id in dataset_ids}
@@ -38,6 +41,7 @@ classifiers = [{
     'initial_parameters': r['config']['classifier']['parameters'],
     'final_parameters': r['result']['finalAlgorithmConfig']['parameters'],
     'output_file': r['result']['algorithmOutputFilePath'],
+    'scores': load_column(os.path.join(r['_dir'], r['result']['algorithmOutputFilePath']), '_OUTLIER'),
     'dataset': r['config']['dataset'],
     'result': r['result'],
 } for r in execution_results]
@@ -122,7 +126,24 @@ def write_classifiers_sheet():
 def write_evaluation_sheet():
     sheet = workbook.create_sheet('Evaluation')
 
-    row_index = 1
+    sheet.cell(1, 1, 'PR AUC').style = 'bold'
+    files = [it['output_file'] for it in classifiers[list(classifiers.keys())[0]]]
+    pr_table_rows = [['Algorithm', *files]] + [[classifier] + len(files) * [None] for classifier in classifiers]
+    for row in pr_table_rows[1:]:
+        for i, file in enumerate(files):
+            classifier_results = classifiers[row[0]]
+            classifier = find_first(classifier_results, lambda it: it['output_file'] == file)
+            if classifier is not None:
+                scores = classifier['scores']
+                dataset = datasets[classifier['dataset']['id']]
+                labels = dataset.labels
+                pr_auc = average_precision_score(labels, scores)
+                row[1 + i] = pr_auc
+    for row in pr_table_rows:
+        sheet.append(row)
+    mark_table(sheet, xlref_range_count(2, 1, len(pr_table_rows), len(pr_table_rows[0])))
+
+    row_index = len(pr_table_rows) + 4
 
     project.run_script('evaluation/quality.py', [args.result_dir,
                                                  '--data-dir', args.data_dir,
@@ -142,7 +163,8 @@ def write_evaluation_sheet():
                                                          '--title', '{name} when changing dataset size',
                                                          '--silent'])
         add_image(sheet, xlref(row_index, 1), os.path.join(tmp_dir_path, 'size-time.png'))
-        add_image(sheet, xlref(row_index, 21), os.path.join(tmp_dir_path, 'size-memory.png'))
+        row_index += 25
+        add_image(sheet, xlref(row_index, 1), os.path.join(tmp_dir_path, 'size-memory.png'))
         row_index += 25
         add_image(sheet, xlref(row_index, 1), os.path.join(tmp_dir_path, 'size-auc.png'))
         row_index += 26

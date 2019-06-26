@@ -42,7 +42,7 @@ classifiers = [{
     'result': r['result'],
 } for r in execution_results]
 classifiers.sort(key=itemgetter('classifier'))
-classifiers = {key: sorted(list(g), key=lambda x: len(x['output_file']))
+classifiers = {key: sorted(list(g), key=lambda x: x['output_file'])
                for key, g in itertools.groupby(classifiers, lambda item: item['classifier'])}
 
 

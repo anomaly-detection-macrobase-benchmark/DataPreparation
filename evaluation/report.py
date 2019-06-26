@@ -13,7 +13,7 @@ from utils.datasets import load_dataset, load_column
 from utils.fs import load_json, list_files
 import utils.xlsx as xlsx
 from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count, xlref, \
-    add_image
+    add_image, set_number_format
 import utils.project as project
 
 arg_parser = ArgParser(
@@ -91,6 +91,7 @@ def write_datasets_sheet():
         for r in df_rows:
             sheet.append(r)
         mark_table(sheet, xlref_range_count(table_start_row, 1, len(df_rows), len(df_rows[0])))
+        set_number_format(sheet, xlref_range_count(table_start_row + 2, 2, len(df_rows) - 2, len(df_rows[0]) - 1))
 
     autofit(sheet)
 
@@ -142,6 +143,8 @@ def write_evaluation_sheet():
     for row in pr_table_rows:
         sheet.append(row)
     mark_table(sheet, xlref_range_count(2, 1, len(pr_table_rows), len(pr_table_rows[0])))
+    pr_table_data_ref = xlref_range_count(3, 2, len(pr_table_rows) - 1, len(pr_table_rows[0]) - 1)
+    set_number_format(sheet, pr_table_data_ref)
 
     row_index = len(pr_table_rows) + 4
 

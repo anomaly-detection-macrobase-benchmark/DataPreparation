@@ -113,3 +113,14 @@ def add_image(sheet, ref, path):
     img = Image(path)
     img.anchor = ref
     sheet.add_image(img)
+
+
+def get_cells(sheet, range_ref):
+    for row in sheet[range_ref]:
+        for cell in row:
+            yield cell
+
+
+def set_number_format(sheet, range_ref, num_format='#,##0.0000'):
+    for cell in get_cells(sheet, range_ref):
+        cell.number_format = num_format

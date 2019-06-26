@@ -1,5 +1,6 @@
 import uuid
 
+from openpyxl.drawing.image import Image
 from openpyxl.styles import NamedStyle, Font
 from openpyxl.utils import get_column_letter, range_boundaries
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -106,3 +107,9 @@ def mark_table(sheet, ref, has_row_header=True, has_column_header=True, table_st
             for r in sheet.iter_rows(min_row, max_row, min_col, min_col):
                 for cell in r:
                     cell.style = 'bold'
+
+
+def add_image(sheet, ref, path):
+    img = Image(path)
+    img.anchor = ref
+    sheet.add_image(img)

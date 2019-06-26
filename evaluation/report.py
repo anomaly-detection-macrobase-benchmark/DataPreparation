@@ -5,14 +5,14 @@ import tempfile
 from operator import itemgetter
 
 from openpyxl import Workbook
-from openpyxl.drawing.image import Image
 
 from utils.argparse import ArgParser
 from utils.collections import find_first
 from utils.datasets import load_stats
 from utils.fs import load_json, load_csv, list_files
 import utils.xlsx as xlsx
-from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count
+from utils.xlsx import autofit, append_blank_rows, pandas_dataframe_to_rows, mark_table, xlref_range_count, xlref,\
+    add_image
 import utils.project as project
 
 arg_parser = ArgParser(
@@ -131,9 +131,7 @@ def write_evaluation_sheet():
                                                  '--plot-name', '{name}',
                                                  '--title', 'PR AUC on all datasets',
                                                  '--silent'])
-    img = Image(os.path.join(tmp_dir_path, 'auc.png'))
-    img.anchor = 'A1'
-    sheet.add_image(img)
+    add_image(sheet, xlref(1, 1), os.path.join(tmp_dir_path, 'auc.png'))
 
     autofit(sheet)
 

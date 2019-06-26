@@ -36,9 +36,10 @@ execution_results = [{**load_json(f),
 dataset_ids = {r['config']['dataset']['id'] for r in execution_results}
 datasets = {dataset_id: load_dataset(dataset_id, args.data_dir, 'is_anomaly') for dataset_id in dataset_ids}
 
+classifier_key = 'algorithm' if 'algorithm' in execution_results[0]['config'] else 'classifier'  # quick workaround to support the old file format, can remove it in future
 classifiers = [{
-    'classifier': r['config']['classifier']['id'],
-    'initial_parameters': r['config']['classifier']['parameters'],
+    'classifier': r['config'][classifier_key]['id'],
+    'initial_parameters': r['config'][classifier_key]['parameters'],
     'final_parameters': r['result']['finalAlgorithmConfig']['parameters'],
     'output_file': r['result']['algorithmOutputFilePath'],
     'scores': load_column(os.path.join(r['_dir'], r['result']['algorithmOutputFilePath']), '_OUTLIER'),

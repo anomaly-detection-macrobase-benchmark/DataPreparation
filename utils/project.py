@@ -11,4 +11,4 @@ def root_dir():
 
 
 def run_script(path, args):
-    subprocess.run(['python', path, *args], cwd=root_dir())
+    subprocess.run(['python', os.path.join(root_dir(), path), *args])
